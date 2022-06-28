@@ -1,0 +1,64 @@
+#include <iostream>
+#include <cmath>
+long long A,B,x,y;
+long long gcd(long long a,long long b,long long &x,long long &y){
+    if(a==0){
+        x=0,y=1;
+        return b;
+    }
+    long long x1,y1;
+    long long hcf=gcd(b%a,a,x1,y1);
+    x=y1-(b/a)*x1;
+    y=x1;
+    return hcf;
+}
+using namespace std;
+int main(){
+    ios::sync_with_stdio(0);
+    long long n,A,B,c1,c2;
+    while(cin>>n&&n){
+        cin>>c1>>A>>c2>>B;
+        int flag=0;
+        if((double)c2/B>(double)c1/A){
+            flag=1;
+            A^=B;
+            B^=A;
+            A^=B;
+            c1^=c2;
+            c2^=c1;
+            c1^=c2;
+        }
+        long long d=gcd(A,B,x,y);
+        if(n%d)
+            cout<<"failed"<<endl;
+        else{
+            long long z;
+            x*=n/d;
+            y*=n/d;
+            if(x%(B/d)==0)
+                z=-x/(B/d);
+            else
+                z=ceil(-x/(double)(B/d));
+            x+=z*(B/d);
+            y-=z*(A/d);
+            long long sum=x*c1+c2*y,tmp,ax=x,ay=y;
+            x+=B/d;
+            y-=A/d;
+            tmp=c1*x+c2*y;
+            while(x>=0&&y>=0&&tmp>0&&tmp<sum){
+                sum=tmp;
+                ax=x,ay=y;
+                x+=B/d,y-=A/d;
+                tmp=c1*x+c2*y;
+            }
+            if(ay>=0){
+                if(flag)
+                    cout<<ay<<' '<<ax<<endl;
+                else
+                    cout<<ax<<' '<<ay<<endl;
+            }
+            else
+                cout<<"failed"<<endl;
+        }
+    }
+}
